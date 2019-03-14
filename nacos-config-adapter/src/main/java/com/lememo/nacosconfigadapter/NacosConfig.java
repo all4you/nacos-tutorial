@@ -17,14 +17,14 @@ public class NacosConfig {
     private Object value;
 
     /**
-     * 配置项的一些要素
+     * 配置项的配置单元
      */
-    private NacosConfigFactor factor;
+    private ConfigUnit unit;
 
-    public NacosConfig(String key, Object value, NacosConfigFactor factor) {
+    public NacosConfig(String key, Object value, ConfigUnit unit) {
         this.key = key;
         this.value = value;
-        this.factor = factor;
+        this.unit = unit;
     }
 
     public String getKey() {
@@ -43,12 +43,12 @@ public class NacosConfig {
         this.value = value;
     }
 
-    public NacosConfigFactor getFactor() {
-        return factor;
+    public ConfigUnit getUnit() {
+        return unit;
     }
 
-    public void setFactor(NacosConfigFactor factor) {
-        this.factor = factor;
+    public void setUnit(ConfigUnit unit) {
+        this.unit = unit;
     }
 
     /**
@@ -56,23 +56,24 @@ public class NacosConfig {
      *
      * @return true：合法 false：不合法
      */
-    public boolean validFactor() {
-        return factor != null;
+    public boolean validUnit() {
+        return unit != null;
     }
 
-    public boolean validValueType(){
-        return validFactor() && checkValueType();
+    public boolean validValueType() {
+        return validUnit() && checkValueType();
     }
 
     /**
      * 检测值类型
+     *
      * @return true：合法的值类型 false：不合法的值类型
      */
-    private boolean checkValueType(){
+    private boolean checkValueType() {
         boolean valid = true;
         String val = value.toString();
         try {
-            switch (factor.getType()) {
+            switch (unit.getType()) {
                 case INT: {
                     Integer.parseInt(val);
                 }
@@ -100,7 +101,7 @@ public class NacosConfig {
                 }
                 break;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             valid = false;
         }
         return valid;
@@ -113,7 +114,7 @@ public class NacosConfig {
      * @return true：比指定等级高 false：比指定等级低
      */
     public boolean higherGrade(int grade) {
-        return validFactor() && factor.getGrade() > grade;
+        return validUnit() && unit.getGrade() > grade;
     }
 
     /**
@@ -122,7 +123,7 @@ public class NacosConfig {
      * @return true：只读 false：可写
      */
     public boolean readOnly() {
-        return validFactor() && factor.isReadOnly();
+        return validUnit() && unit.isReadOnly();
     }
 
     @Override
@@ -133,8 +134,8 @@ public class NacosConfig {
                 .append(key)
                 .append(",\"value\":")
                 .append(value)
-                .append(",\"factor\":")
-                .append(factor)
+                .append(",\"unit\":")
+                .append(unit)
                 .append("}");
         return sb.toString();
     }

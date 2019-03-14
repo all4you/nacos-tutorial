@@ -7,10 +7,7 @@ import com.alibaba.nacos.api.exception.NacosException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 
@@ -20,9 +17,9 @@ import java.util.concurrent.Executor;
 public abstract class AbstractNacosConfigService implements NacosConfigService {
 
     /**
-     * key和factor的映射关系
+     * key和unit的映射关系
      */
-    private Map<String, NacosConfigFactor> factorMap;
+    private Map<String, ConfigUnit> unitMap;
 
     /**
      * key和配置对象的映射关系
@@ -45,10 +42,10 @@ public abstract class AbstractNacosConfigService implements NacosConfigService {
     private ConfigService configService;
 
     public AbstractNacosConfigService(String serverAddress, String dataId, String group) {
-        this.factorMap = new ConcurrentHashMap<>();
+        this.unitMap = new ConcurrentHashMap<>();
         this.configMap = new ConcurrentHashMap<>();
-        // 刷新 factor
-        this.refreshFactors();
+        // 刷新 unit
+        this.refreshUnit();
         this.dataId = dataId;
         this.group = group;
         Properties properties = new Properties();
@@ -64,18 +61,18 @@ public abstract class AbstractNacosConfigService implements NacosConfigService {
     }
 
     /**
-     * 获取 ConfigFactor 的对象列表
+     * 获取 ConfigUnit 的对象列表
      *
      * @return 对象列表
      */
-    public abstract List<NacosConfigFactor> getConfigFactorList();
+    public abstract List<ConfigUnit> getConfigUnitList();
 
     /**
-     * 接收到最新的配置信息时，是否对 factor 进行刷新
+     * 接收到最新的配置信息时，是否对 ConfigUnit 进行刷新
      *
      * @return true：刷新 false：不刷新
      */
-    public abstract boolean refreshFactorsOnReceiveConfig();
+    public abstract boolean refreshUnitOnReceiveConfig();
 
     @Override
     public NacosConfig getConfig(String key) {
@@ -101,6 +98,13 @@ public abstract class AbstractNacosConfigService implements NacosConfigService {
                 configList.add(config);
             }
         }
+        // 根据 grade 进行升序排序
+        configList.sort(new Comparator<NacosConfig>() {
+            @Override
+            public int compare(NacosConfig o1, NacosConfig o2) {
+                return o1.getUnit().getGrade() - o2.getUnit().getGrade();
+            }
+        });
         return configList;
     }
 
@@ -117,9 +121,9 @@ public abstract class AbstractNacosConfigService implements NacosConfigService {
         if (config == null) {
             throw new IllegalArgumentException("config does not exists with key=" + key);
         }
-        // 如果配置项的 factor 不合法
-        if (!config.validFactor()) {
-            throw new IllegalArgumentException("config factor invalid with key=" + key);
+        // 如果配置项的 unit 不合法
+        if (!config.validUnit()) {
+            throw new IllegalArgumentException("config unit invalid with key=" + key);
         }
         // 如果当前配置项的等级更高，则不允许修改
         if (config.higherGrade(grade)) {
@@ -138,7 +142,7 @@ public abstract class AbstractNacosConfigService implements NacosConfigService {
         config.setValue(value);
         // 检查当前配置项的值类型是否合法
         if (!config.validValueType()) {
-            throw new IllegalArgumentException("value type invalid with key=" + key + ", should be:" + config.getFactor().getType());
+            throw new IllegalArgumentException("value type invalid with key=" + key + ", should be:" + config.getUnit().getType());
         }
         configMap.put(key, config);
 
@@ -147,16 +151,16 @@ public abstract class AbstractNacosConfigService implements NacosConfigService {
     }
 
     /**
-     * 刷新key 和 factor 的对应关系
+     * 刷新key 和 unit 的对应关系
      */
-    private void refreshFactors() {
-        List<NacosConfigFactor> factorList = getConfigFactorList();
+    private void refreshUnit() {
+        List<ConfigUnit> factorList = getConfigUnitList();
         if (factorList == null || factorList.isEmpty()) {
             return;
         }
-        factorMap.clear();
-        for (NacosConfigFactor factor : factorList) {
-            factorMap.put(factor.getKey(), factor);
+        unitMap.clear();
+        for (ConfigUnit unit : factorList) {
+            unitMap.put(unit.getKey(), unit);
         }
     }
 
@@ -178,20 +182,20 @@ public abstract class AbstractNacosConfigService implements NacosConfigService {
         // 遍历 properties
         for (Object k : properties.keySet()) {
             String key = k.toString();
-            // 获取该 key 对应的 factor
-            NacosConfigFactor factor = factorMap.get(key);
-            if (factor == null) {
+            // 获取该 key 对应的 unit
+            ConfigUnit unit = unitMap.get(key);
+            if (unit == null) {
                 continue;
             }
             // 将配置项的值封装成 config 对象
             String val = properties.getProperty(key);
-            Object value = parseValue(val, factor.getType());
-            NacosConfig config = new NacosConfig(key, value, factor);
+            Object value = parseValue(val, unit.getType());
+            NacosConfig config = new NacosConfig(key, value, unit);
             configMap.put(key, config);
         }
     }
 
-    private Object parseValue(String val, NacosConfigType type) {
+    private Object parseValue(String val, ConfigType type) {
         Object value;
         try {
             switch (type) {
@@ -262,9 +266,9 @@ public abstract class AbstractNacosConfigService implements NacosConfigService {
 
         @Override
         public void receiveConfigInfo(String content) {
-            // 如果需要每次对 factor 进行刷新
-            if (refreshFactorsOnReceiveConfig()) {
-                refreshFactors();
+            // 如果需要每次对 unit 进行刷新
+            if (refreshUnitOnReceiveConfig()) {
+                refreshUnit();
             }
             reloadConfigs(content);
         }

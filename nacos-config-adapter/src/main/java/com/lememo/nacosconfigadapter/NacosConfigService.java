@@ -9,6 +9,7 @@ public interface NacosConfigService {
 
     /**
      * 根据配置项的key获取配置项
+     *
      * @param key 配置项的key
      * @return 配置项
      */
@@ -16,6 +17,7 @@ public interface NacosConfigService {
 
     /**
      * 根据配置项的key获取配置项的值
+     *
      * @param key 配置项的key
      * @return 配置项的值
      */
@@ -23,6 +25,7 @@ public interface NacosConfigService {
 
     /**
      * 获取(小于等于)指定等级下的所有配置项
+     *
      * @param grade 配置项的等级
      * @return 配置项的列表
      */
@@ -30,7 +33,8 @@ public interface NacosConfigService {
 
     /**
      * 更新(小于等于)指定等级的配置项的值
-     * @param key 配置项的key
+     *
+     * @param key   配置项的key
      * @param value 配置项的值
      * @param grade 配置项的危险等级
      * @return 更新是否成功

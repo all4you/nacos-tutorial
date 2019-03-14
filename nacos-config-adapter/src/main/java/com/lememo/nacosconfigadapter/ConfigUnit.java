@@ -4,9 +4,9 @@ import java.util.List;
 
 /**
  * @author houyi
- * Nacos 每个配置项的要素
+ * Nacos 中每个配置项所需要对应的一个配置单元
  **/
-public class NacosConfigFactor {
+public class ConfigUnit {
 
     /**
      * 默认等级：0
@@ -27,7 +27,7 @@ public class NacosConfigFactor {
     /**
      * 配置项的值类型
      */
-    private NacosConfigType type;
+    private ConfigType type;
 
     /**
      * 是否只读
@@ -71,11 +71,11 @@ public class NacosConfigFactor {
         this.desc = desc;
     }
 
-    public NacosConfigType getType() {
+    public ConfigType getType() {
         return type;
     }
 
-    public void setType(NacosConfigType type) {
+    public void setType(ConfigType type) {
         this.type = type;
     }
 

@@ -4,9 +4,9 @@ import java.util.Arrays;
 
 /**
  * @author houyi
- * Nacos 配置项的类型
+ * Nacos 配置项的值类型
  **/
-public enum NacosConfigType {
+public enum ConfigType {
 
     /**
      * int
@@ -31,12 +31,11 @@ public enum NacosConfigType {
     /**
      * string
      */
-    STRING("string"),
-    ;
+    STRING("string"),;
 
     private String type;
 
-    NacosConfigType(String type) {
+    ConfigType(String type) {
         this.type = type;
     }
 
@@ -50,7 +49,7 @@ public enum NacosConfigType {
      * @param type 类型
      * @return 枚举
      */
-    public static NacosConfigType getEnum(String type) {
+    public static ConfigType getEnum(String type) {
         return Arrays.stream(values())
                 .filter(t -> t.getType().equals(type))
                 .findFirst()
