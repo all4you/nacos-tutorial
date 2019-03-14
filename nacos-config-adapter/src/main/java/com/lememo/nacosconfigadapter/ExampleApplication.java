@@ -30,12 +30,12 @@ public class ExampleApplication {
 
     @Autowired
     private NacosConfigService configService;
-//
-//    @RequestMapping("/")
-//    public @ResponseBody
-//    String index() {
-//        return "index";
-//    }
+
+    @RequestMapping("/")
+    public @ResponseBody
+    String index() {
+        return "welcome to use nacos config adapter";
+    }
 
     @RequestMapping("/nacos/config/list")
     public @ResponseBody
