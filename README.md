@@ -20,6 +20,7 @@
 
 ## Nacos实战系列
 
+- [Nacos实战：配置中心插件](nacos-config-adapter/nacos-config-adapter.md)
 - 未完待续。。
 
 
