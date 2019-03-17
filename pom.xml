@@ -22,6 +22,7 @@
         <module>nacos-config-center</module>
         <module>nacos-config-realtime-update</module>
         <module>nacos-config-adapter</module>
+        <module>nacos-naming-glance</module>
     </modules>
 
 </project>
