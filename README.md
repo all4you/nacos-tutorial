@@ -5,22 +5,22 @@
 如您觉得该项目对您有用，欢迎点击右上方的 **Star** 按钮，给予支持！！
 
 - GitHub：<https://github.com/all4you/nacos-tutorial>
-- 简书：<https://www.jianshu.com/u/51121bddcd2a>
 
 
 
 ## Nacos原理系列
 
-- [Nacos原理：全解析](nacos-overview/nacos-overview.md)
-- [Nacos原理：配置中心](nacos-config-center/nacos-config-center.md)
-- [Nacos原理：配置实时更新](nacos-config-realtime-update/nacos-config-realtime-update.md)
+- [Nacos 全解析](nacos-overview/nacos-overview.md)
+- [Nacos 配置中心原理分析](nacos-config-center/nacos-config-center.md)
+- [Nacos 配置实时更新原理分析](nacos-config-realtime-update/nacos-config-realtime-update.md)
+- [Nacos 服务注册与发现原理分析](nacos-naming-glance/nacos-naming-glance.md)
 - 未完待续。。
 
 
 
 ## Nacos实战系列
 
-- [Nacos实战：配置中心插件](nacos-config-adapter/nacos-config-adapter.md)
+- [加一个适配层更好的使用配置管理](nacos-config-adapter/nacos-config-adapter.md)
 - 未完待续。。
 
 
